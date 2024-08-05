@@ -5,3 +5,4 @@ SUMX =
     'Sales'[Quantity] * 'Sales'[Unit Price]
   )
 )
+1
