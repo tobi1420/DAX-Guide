@@ -1,6 +1,6 @@
 SUMX =
-  CALCULATE(                                  --Initialize Calculate to allow context transition
-    SUMX(
+  CALCULATE(                                  -- Initialize Calculate to allow Conntext Transition
+    SUMX(                                     -- Initialize Iterator Function to summarize scan all rows of desired table
     'Sales',
     'Sales'[Quantity] * 'Sales'[Unit Price]
   )
