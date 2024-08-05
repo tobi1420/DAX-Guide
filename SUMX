@@ -1,0 +1,7 @@
+SUMX =
+  CALCULATE(
+    SUMX(
+    'Sales',
+    'Sales'[Quantity] * 'Sales'[Unit Price]
+  )
+)
