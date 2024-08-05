@@ -1,5 +1,5 @@
 SUMX =
-  CALCULATE(
+  CALCULATE(                                  --Initialize Calculate to allow context transition
     SUMX(
     'Sales',
     'Sales'[Quantity] * 'Sales'[Unit Price]
