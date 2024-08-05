@@ -1,7 +1,7 @@
 SUMX =
-  CALCULATE(                                      -- Initialize Calculate to allow Conntext Transition
-    SUMX(                                         -- Initialize Iterator Function to scan all rows of desired table
-    'Sales',                                      -- Preparing the table 'Sales' to be scanned for all rows
-    'Sales'[Quantity] * 'Sales'[Unit Price]       -- Multiplying each row of the 'Sales' table with Quantity and Unitprice
+  CALCULATE(                                                -- Initialize Calculate to allow Conntext Transition
+    SUMX(                                                   -- Initialize Iterator Function to scan all rows of desired table
+    'Sales',                                                -- Preparing the table 'Sales' to be scanned for all rows
+    'Sales'[Quantity] * 'Sales'[Unit Price]                 -- Multiplying each row of the 'Sales' table with Quantity and Unitprice
   )
 )
