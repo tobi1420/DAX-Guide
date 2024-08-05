@@ -1,3 +1,4 @@
+AVERAGEX = 
 AVERAGEX(                                                                 -- Initialize the iterator function to calculate the average
     VALUES(                                                               -- All unique values in the given filter context is returned as a table with one column
         'Sales'[Document No.]                                             -- All Unique Document No are returned
@@ -9,3 +10,4 @@ AVERAGEX(                                                                 -- Ini
         )
     )
 )
+
