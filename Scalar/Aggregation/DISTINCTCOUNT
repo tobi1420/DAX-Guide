@@ -1,0 +1,4 @@
+DISTINCTCOUNT =                                                     -- Count is a function that counts all the distinct rows and return and integer
+    DISTINCTCOUNT(
+        'Sales'[Transaction ID]                                     -- The chosen column is Transaction ID
+    )
