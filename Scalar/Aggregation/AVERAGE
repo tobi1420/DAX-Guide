@@ -1,0 +1,4 @@
+AVERAGEX = 
+AVERAGE(                                                -- Aggregates a chosen column by averaging all the values.
+    'Sales'[Quantity]                                   -- The chosen column is Quantity
+)
