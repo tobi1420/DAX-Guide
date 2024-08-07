@@ -1,0 +1,10 @@
+LASTNONBLANK =                                                 -- This measure is a lifesaver when it comes to finding the first transaction date for a given filter context. 
+LASTNONBLANK(                                                  -- The measure returns a date value from a specified column.
+    'Sales'[Transaction Date],                                 -- In this case the transaction date i chosen.
+        CALCULATE(                                             -- Calculate is utilized here to ensure that the row context is modified into a filter context. 
+        SUMX(                                                  -- Initialize Iterator Function to scan all rows of desired table
+            'Sales',                                           -- Preparing the table 'Sales' to be scanned for all rows
+            'Sales'[Quantity] * 'Sales'[Unit Price]            -- Multiplying each row of the 'Sales' table with Quantity and Unitprice
+        )
+    )
+)
