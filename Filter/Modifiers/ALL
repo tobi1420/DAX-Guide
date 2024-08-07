@@ -1,0 +1,10 @@
+ALL =                                                                   -- All is a tricky modifier since it can be used in a row context with FILTER to return a table, 
+    CALCULATE(                                                          -- But also ALL can be used in a filter context with CALCULATE to ignor any mentioned filters.
+        SUMX(                                                           -- Pro-tip: The modifier REMOVEFILTER() instead of ALL. It is syntax sugar for ALL. 
+            'Sales',
+            'Sales'[Quantity] * 'Sales'[Unit Price]                     
+        ),
+        ALL()                                                           -- All remove any existing filter context and destroys it completely. Therefore it is practical to use all when 
+    )                                                                   -- Percent of grand total must be calculated.       
+                                                                        -- When left with no arguments, all filters are destroyed. ALL('Product'[Product]) would only destroy the filter
+                                                                        -- for Products.
