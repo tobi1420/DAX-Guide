@@ -1,0 +1,4 @@
+COUNT =                                                             -- Count is a function that counts all the rows and return and integer
+    COUNT(
+        'Sales'[Transaction ID]                                     -- The chosen column is Transaction ID
+    )
