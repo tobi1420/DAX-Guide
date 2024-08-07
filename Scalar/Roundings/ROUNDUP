@@ -1,0 +1,7 @@
+ROUNDUP = 
+ROUNDUP(                                                                -- Rounds a number up, toward zero
+    10392.322,                                                          -- Number that must be rounded up
+    2                                                                   -- By setting the significance to 2 the number will be evaluated to 10392.330
+)                                                                       -- If the siginificance was se to 1 then the number would have been 10392.400
+                                                                        -- Pro-tip, negative siginificances can be used. The negative significance explains how many integers from the
+                                                                        -- the comma the rounding show start. For instance -1 results into 10400 and -3 results to 11000.
