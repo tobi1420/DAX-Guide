@@ -1,0 +1,5 @@
+TRUNC = 
+TRUNC(                                                          -- Truncates a number to an integer by removing the decimal part of the number
+    10392.322,                                                  -- The number that needs to be truncated
+    2                                                           -- By applying 2 as significance the number will be evaluated to 10392.32.
+)                                                               -- If the signifinace was set to 1 then the number would be 10392.3
