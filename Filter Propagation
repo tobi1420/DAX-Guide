@@ -1,0 +1,34 @@
+In Dax, whenever a filter is applied, either as an external or internal filter, this filter is defined in the dimension table and then propagated to the fact table.
+External filters originates from the visuals of a Power BI report. This includes slicers, Matrix Rows and Columns, Crossfilter from other visuals etc.
+
+Lets say the following external filters are applied in a report: 
+
+    'Calendar'[Year] = 2023,
+    'Product'[Category] IN {"Beverage", "Food"}
+
+It is required that there are relationsships between the two dimensions ('Calendar' and 'Product') towards the fact 'Sales'. These must be 1:* with a unidirectional filter.
+
+Now, to apply these filters, the engine creates an Expanded table, which is a table consisting of the entire Fact table and the relevant columns from the dimensions.
+
+The fact table would consist of: 
+
+'Sales'
+[Product ID], [Transaction Date], [Quantity], [Unit Price].
+
+The dimensions tables consists of: 
+
+'Product'
+[Product ID], [Product Category]
+
+'Calendar'
+[Year], [Transaction Date]
+
+To apply the external filters, the following expanded table is created:
+[Product ID], [Transaction Date], [Quantity], [Unit Price] -- 'Product -- [Product Category] -- Calendar[Year]
+
+Now it is visually interpretable that the suggested filters can be applied, since the expanded table can compute the desired filter.
+
+The evaluation order for a filter in Power BI is always:
+1) External Filters applied by the user
+2) Internal Filters applied by the developer, FILTER (ALL)...
+3) The execution of the desired measure, based on the filters.
