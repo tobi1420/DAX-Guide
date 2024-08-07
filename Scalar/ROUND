@@ -1,5 +1,0 @@
-ROUND =                                                     -- Rounds a number down, toward zero, to the nearest multiple of significance
-ROUND(                                                      
-    10392.323,                                              -- The number will be returned as 10392.320 since the significance is set to 2. 
-    2                                                       -- If it was set to 3 then the value would be 10392.323 and if it was 1 then 10392.300
-)
