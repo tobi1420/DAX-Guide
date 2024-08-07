@@ -1,0 +1,4 @@
+MAX =                                                   -- Max returns the max value of either a string or a number. Can also be used to compare two values and hereby finding max by applying the second argument.
+MAX(
+    'Sales'[Quantity]                                   -- The chosen column here is Quantity.
+)
