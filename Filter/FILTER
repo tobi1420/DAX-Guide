@@ -1,0 +1,16 @@
+FILTER =                                                                                -- FILTER is an interesting function since it works both in the row-context and the filter-context.
+CALCULATE(                                                                              -- When filter is included in the row Context (X-functions) then it is typically used to limit the number
+    SUMX(                                                                               -- of rows to be scanned. As seen here, only the rows where the Quantity is greater than 100 is included.
+        FILTER(
+            'Sales', 
+            'Sales'[Quantity] > 100
+        ),
+        'Sales'[Quantity] * 'Sales'[Unit Prince]
+    ),
+    FILTER(                                                                             -- The filter here is in collaboration with the ALL function used to introduce a new filter context immediately
+        All(                                                                            -- after the context is detroyed by ALL. If one had written 'Calendar'[Year] = 2023 - this would have been syntax sugar for
+            'Calendar'                                                                  -- FILTER(ALL('Calendar'), 'Calendar'[Year] = 2023)
+        )
+    ),
+    'Calendar'[Year] = 2023
+)
