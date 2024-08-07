@@ -1,0 +1,12 @@
+MAXX = 
+    MAXX(
+        VALUES(
+            'Sales'[Document No]
+        ),
+        CALCULATE(
+            SUMX(
+                'Sales',
+                'Sales'[Quantity] * 'Sales'[Unit Price]
+            )
+        )
+    )
