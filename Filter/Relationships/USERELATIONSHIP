@@ -1,0 +1,10 @@
+USERELATIONSHIP =                                                                       -- USERELATIONSHIP requires that a role playing relationship or dimension to work. 
+    CALCULATE(                                                                          -- The function has an inbuilt crossfunction setting which means that the SUMX including Filter context
+        SUMX(                                                                           -- will propagate from the many to the one side of the relationsship. 
+            'Sales',                                                                    -- The function is very useful when one need to include calculations based on many possible relationsships.
+            'Sales'[Quantity] * 'Sales'[Unit Price]                                     -- Remember that only one relationsship can be active between the tables.
+        ),
+        USERELATIONSHIP(
+            'Sales'[Shipping Date], 'Calendar'[Transaction Date]
+        )
+    )
