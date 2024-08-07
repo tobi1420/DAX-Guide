@@ -1,0 +1,7 @@
+ROUNDOWN = 
+ROUNDOWN(                                                               -- Rounds a number down, toward zero
+    10392.322,                                                          -- Number that must be rounded down
+    2                                                                   -- By setting the significance to 2 the number will be evaluated to 10392.320
+)                                                                       -- If the siginificance was se to 1 then the number would have been 10392.300
+                                                                        -- Pro-tip, negative siginificances can be used. The negative significance explains how many integers from the
+                                                                        -- the comma the rounding show start. For instance -1 results into 10390 and -2 results to 10300.
