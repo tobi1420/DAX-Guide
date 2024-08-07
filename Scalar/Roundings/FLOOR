@@ -1,0 +1,5 @@
+FLOOR =                                                                    -- Rounds a number down to the desired multiple
+FLOOR(                                                                     -- Pro-tip: Use this function when time (hours:seconds) must be rounded down. It suits time analysis well.
+    "19.41.43",                                                             -- Specific time stamp the needs to be rounded
+    "1.00"                                                                  -- Setting the significance to "1:00" will ensure that the time stamp is rounded down to 19:00:00.
+)
