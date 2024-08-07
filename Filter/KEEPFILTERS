@@ -1,0 +1,15 @@
+KEEPFILTERS =                                                                           -- KEEPFILTERS is a modifier that can be used to include the filter contexts once again.
+CALCULATE(                                                                              -- When the filter for Category is destroyed by ALL, the visual will show the same value all the way down.
+    SUMX(                                                                               -- with KEEPFILTERS the filter context can be included again even though calcualate has limited the included data.
+        'Sales', 
+        'Sales'[Quantity] * 'Sales'[Unit Price]
+    ),
+    KEEPFILTERS(
+        FILTER(
+            ALL(
+                'Product'
+            ),
+            'Product'[Category] = "Bakery"
+        )
+    )
+)
