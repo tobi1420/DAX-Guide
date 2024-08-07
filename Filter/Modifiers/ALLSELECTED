@@ -1,0 +1,8 @@
+ALLSELECTED =                                                               -- ALLSELECTED is similar to the function ALL. External filters set for columns within ALLSELECTED is not ignored!
+CALCULATE(                                                                  -- This means that the filter context respects the external filters. This is important
+    SUMX(                                                                   -- since it gives the user the possibility to find Grand Total of calculations based on filters.
+        'Sales', 
+        'Sales[Quantity] * 'Sales'[Unit Price]
+    ),
+    ALLSELECTED('Product'[Product Category])
+)
