@@ -1,0 +1,8 @@
+ALLEXCEPT =                                                                     -- ALLEXCEPT is a quick way to remove all filters except the ones mentioned in the function.
+CALCULATE(                                                                      -- It is the opposite of ALL, where a certain set of filters are destroyed.
+    SUMX(
+        'Sales', 
+        'Sales'[Quantity] * 'Sales'[Unit Price]
+    ),
+    ALLEXCEPT('Calendar', 'Calendar'[Year])
+)
