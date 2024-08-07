@@ -1,6 +1,6 @@
 ROLLING CUMMULATIVE TOTAL =                                                                             -- A CUMMULATIVE total aggregates all the previous values and present them in one column.
     CALCULATE(                                                                                          -- As Always CALCULATE is the most important player in relation to FILTER        
-        SUMX(                                                                                           -- What this essentilly does is that any previous filter context is remove
+        SUMX(                                                                                           -- What this essentilly does is that any previous filter context is removed
             'Sales',                                                                                    -- and then immediately a new filter is applied. This ensures that the accumulation
             'Sales'[Quantity] * 'Sales'[Unit Price]                                                     -- starts all the way back from the first transaction date.
         ),                                                                                              -- The new filter context ensures that the included dates in the current filter context
