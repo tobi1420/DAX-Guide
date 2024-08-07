@@ -1,0 +1,9 @@
+CROSSFILTER =                                                                   -- Since filters traverse from the one side to the many side of the relationsship it can be 
+CALCULATE(                                                                      -- difficult to include filters from the many to one side without including CROSSFIlTER.
+    COUNT(                                                                      -- In such scenarios, always include the CROSSFILTER modifier instead of setting the physical relationsship BIDIRECTIONAl
+        'Employee'[Staff id]                                                    -- It limits the possibility for ambiguity as well as techincal debt when other users built on top of the semantic model.
+    ),
+    CROSSFILTER(
+        'Sales'[Staff id], 'Employee'[Staff id], BOTH
+    )
+)
