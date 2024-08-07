@@ -1,0 +1,4 @@
+SUM = 
+SUM(                                                -- Aggregates a chosen column by summarizing the all the values.
+    'Sales'[Quantity]                               -- The chose column is Quantity
+)
