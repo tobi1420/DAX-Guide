@@ -1,0 +1,17 @@
+SUMMARIZE =                                                                                               -- Creates a summary of the input table grouped by the specified columns                                                                                                                     
+ADDCOLUMNS(
+    SUMMARIZE(                                                                                            -- SUMMARIZE can be used in collaboration of ADDCOLUMNS. This will include new custom columns based on DAX.
+        FILTER(                                                                                           -- Since SUMMARIZE is an iterator, it is possible to limit the rows than needs to be scanned or included.
+            'Sales by Store', 
+            'Sales by Store'[transaction_id] <= 100                                                       -- A Virtual table is returned bassed on only the rows where Transaction ID <= 100.
+        ),
+        'Sales by Store'[transaction_id],                                                                 -- SUMARIZE only include grouped row combinations for the columns in the function.
+        'Sales by Store'[product_id],                                                                     
+        'Sales by Store'[store_id]
+    ),  "Sales", CALCULATE(                                                                               -- As part of the ADDCOLUMNS, the sales numbers are included here as custom DAX.
+                            SUMX(
+                                'Sales by Store', 
+                                'Sales by Store'[quantity_sold] * 'Sales by Store'[unit_price]
+                            )
+                        )
+)
