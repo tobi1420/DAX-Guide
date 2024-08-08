@@ -1,0 +1,75 @@
+Returning Customers Between Week 45 and 46 = 
+VAR _week45 = 
+    CALCULATETABLE(
+        SUMMARIZE(
+            'Sales by Store', 
+            'Sales by Store'[customer_id]
+        ),
+        'Sales by Store'[transaction_date] >= DATE(2018, 4, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 11, 11)
+    )
+
+VAR _week46 = 
+    CALCULATETABLE(
+        SUMMARIZE(
+            'Sales by Store', 
+            'Sales by Store'[customer_id]
+        ),
+        'Sales by Store'[transaction_date] >= DATE(2018, 11, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 17, 11)
+    )
+VAR _intersect = 
+ADDCOLUMNS(
+    ADDCOLUMNS(
+        INTERSECT(
+            _week45,
+            _week46
+        ),
+        "Revenue Week 45", FORMAT(
+            CALCULATE(
+                SUMX(
+                    'Sales by Store', 
+                    'Sales by Store'[quantity_sold] 
+                    * 
+                    'Sales by Store'[unit_price]
+                    ),
+                    'Sales by Store'[transaction_date] >= DATE(2018, 4, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 11, 11)
+                ),
+            ".0"
+        ),
+        "Revenue Week 46", FORMAT(
+            CALCULATE(
+                SUMX(
+                    'Sales by Store', 
+                    'Sales by Store'[quantity_sold] 
+                    * 
+                    'Sales by Store'[unit_price]
+                    ),
+                    'Sales by Store'[transaction_date] >= DATE(2018, 11, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 17, 11)
+                ),
+            ".0"
+        ),
+        "Cost Week 46", FORMAT(
+            CALCULATE(
+                SUMX(
+                    'Sales by Store', 
+                    RELATED('Product Lookup'[current_cost]) * 'Sales by Store'[quantity_sold]
+                ),
+                'Sales by Store'[transaction_date] >= DATE(2018, 4, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 11, 11)
+            ),
+            ".0"
+        ),
+        "Cost Week 45", FORMAT(
+            CALCULATE(
+                SUMX(
+                    'Sales by Store', 
+                    RELATED('Product Lookup'[current_cost]) * 'Sales by Store'[quantity_sold]
+                ),
+            'Sales by Store'[transaction_date] >= DATE(2018, 11, 11) && 'Sales by Store'[transaction_date] < DATE(2018, 17, 11)
+            ),
+            ".0"
+        )
+    ),
+"Highest Value", MAX([Revenue Week 45], [Revenue Week 46])
+)
+
+RETURN
+_intersect
