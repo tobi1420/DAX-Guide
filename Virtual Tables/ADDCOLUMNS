@@ -1,0 +1,26 @@
+ADDCOLUMNS =                                                                                       -- Returns a table with selected columns from the table plus any new columns specified by the DAX expressions.
+FILTER(                                                                                                                                                                              
+    ADDCOLUMNS(                                                                                     -- ADDCOLUMNS works almost exactly like SELECTCOLUMNS - the main difference is that ADDCOLUMNS include all columns as default.
+        'Product Lookup',                                                                           -- A table must always be specified for ADDCOLUMNS since it needs a table to return the data from.
+        "Sales", CALCULATE(                                                                         -- New columns can be appended via DAX Code, for instance here the sales for each product category is retrieved.
+                    SUMX(
+                        RELATEDTABLE(
+                            'Sales by Store'
+                        ), 
+                        'Sales by Store'[quantity_sold] * 'Sales by Store'[unit_price]
+                    )
+                )
+            ),
+            'Product'[Id] <= 10                                                                     -- Since ADDCOLUMNS is an iterator it is possible to limi
+        )
+                                                                                                    -- The Code above is not fully optimized since the DAX Code are performed for all the rows and THEN the filter is applied
+                                                                                                    -- Instead it would be wiser to include the filter on the first appearance of 'Product Lookup' table: 
+
+ADDCOLUMNS = 
+    ADDCOLUMNS(
+        FILTER(                                                                                     -- Now the table is filtered before the DAX calculation is performed.
+            'Product Lookup',
+            'Product Lookup'[product_id] <= 10
+        ),
+        "Sales", FORMAT(CALCULATE(SUMX(RELATEDTABLE('Sales by Store'), 'Sales by Store'[quantity_sold] * 'Sales by Store'[unit_price])), "CURRENCY")
+    )
