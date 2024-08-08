@@ -1,0 +1,4 @@
+GENERATESERIES =                                                                                   -- Returns a one column table populated with sequential values                                                                 
+GENERATESERIES(                                                                                    -- GENERATESERIES is a great way to build a custom range of data to be used as a parameter input
+    TIME(00, 00, 00), TIME(23, 59, 59), TIME(00,15,00)                                             -- In this example the TIME functionality have been applied. But any numerical setup will go.
+)                                                                                                  -- For instance, 1, 10, 1 will return a tabel with one columns with 10 rows with 1 as interval. 
