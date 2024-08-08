@@ -1,0 +1,7 @@
+RELATED =                                                                                       -- Returns a value from a related table in the data model from the one side of the relationsship
+CALCULATE(                                                                                      -- Typically used when standing in a Fact table (Many Side) since the Foreign key corresponds to the Primary Key in the Dimension (One Side)
+    SUMX(
+        'Sales',
+        'Sales'[Quantity] * RELATED('Product'[Current Cost])
+    )
+)
