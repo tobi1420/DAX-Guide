@@ -1,0 +1,30 @@
+_ALLEXCEPT CHALLENGE =                                                                      -- EXCEPT is another JOIN function where only the part from the left table that do no match on the right table is returned.
+VAR _customersWeek45 =                                                                      -- The function is great to identify which values that did not interact between different periods.
+CALCULATETABLE(                                                                             -- This function can also be applied in the context of CALCULATETABLE, which is smart because it can limit the number of rows that needs to be scan.
+    SUMMARIZE(
+        'Sales by Store', 
+        'Sales by Store'[customer_id]
+    ),
+    'Calendar'[ISO Week] = 45
+)
+
+VAR _customerWeek46 = 
+CALCULATETABLE(
+    SUMMARIZE(
+        'Sales by Store',
+        'Sales by Store'[customer_id]
+    ),
+    'Calendar'[ISO Week] = 46
+)
+
+VAR _lostCustomers = 
+ADDCOLUMNS(
+EXCEPT(
+    _customersWeek45,
+    _customerWeek46
+),
+"Sales", CALCULATE([Total Sales], 'Calendar'[ISO Week] = 45)
+)
+
+RETURN
+_lostCustomers
