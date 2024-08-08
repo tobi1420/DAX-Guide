@@ -1,0 +1,29 @@
+Budget Monthly = 
+
+VAR _budgetCalculation = 
+    CALCULATE(
+        SUMX(
+            'Budget Daily Level',
+            'Budget Daily Level'[Amount]
+        ),
+        TREATAS(
+            SUMMARIZE(
+                'Sales by Store', 
+                'Calendar'[Year_ID],
+                'Calendar'[Month_Name]
+            ),
+            'Budget Daily Level'[Year],
+            'Budget Daily Level'[Month]
+        )
+    )
+
+RETURN
+
+SWITCH(
+    TRUE(),
+    HASONEVALUE('Calendar'[Transaction_Date]), DIVIDE(_budgetCalculation, DATEDIFF(STARTOFMONTH('Calendar'[Transaction_Date]), ENDOFMONTH('Calendar'[Transaction_Date]),DAY)+1),
+    HASONEVALUE('Calendar'[Month_Name]), _budgetCalculation,
+    HASONEVALUE('Calendar'[Year_ID]), _budgetCalculation,
+    _budgetCalculation
+    
+)
