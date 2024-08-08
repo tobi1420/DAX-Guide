@@ -1,0 +1,17 @@
+_DATATABLE =   
+ADDCOLUMNS(                                                                                 -- Returns a table with a fixed set of values. DATATABLE can only accept fixed data inputs (no table or column references)                                                                                
+    FILTER(                                                                                                 
+        DATATABLE(
+            "ID", INTEGER, "Name", STRING, "Profession", STRING, "Retired", STRING, {       -- All the Table headers/columns are specified here. Name and Type must be specified.
+                {1, "Søren", "Kitchen Salesman", "No"},                                     -- The values of the table must be added into a {} and each and every row must also be added into a {} to conduct with expected syntax.
+                {2, "Sascha", "Fashion Purchase-Assistent", "No"},                         
+                {3, "Pia", "Social Worker", "No"},
+                {4, "Tobias", "Business Intelligence Developer", "No"},
+                {5, "Peter", "Bicycle Purchaser", "Yes"}
+            }
+        ),
+        [Retired] = "No"                                                                    -- Since DATATABLE is a TABLE and hereby also an iterator, it is possible to apply a filter to the TABLE.
+    ),
+    "Sales", "High Sales"                                                                   -- It is also possible to wrap it all with ADDCOLUMNS to include new custom Tables.
+
+)
