@@ -1,0 +1,20 @@
+RELATEDTABLE =                                                                          -- RELATEDTABLE creates a temporary relationship between two tables. The outlook for this function i towards the Many Side.                                                                                                                       
+ADDCOLUMNS(                                                                             -- This means that one typically start by querying the One side. 
+    CALCULATETABLE(
+        SUMMARIZE(                                                                      -- Here the summarize function ensures that only the unique values for the product categories are returned.
+            'Product Lookup',
+            'Product Lookup'[product_category]
+        ),
+        'Product Lookup'[product_category] <> "Coffee"                                  -- Before the summarize function the 'Product' Lookup table is then filtered to look retrieve all categories except for coffee.
+    ),
+    "Total Sales", CALCULATE(                                                           -- Here the RELATEDTABLE part happens. What must be understand here is that first a row context is introduced.
+                        SUMX(                                                           -- For each row the value is "unpacked" and sent to the RELATEDTABLE. The RELATEDTABLE then filters the 'Sales by Store' table for the primary key.
+                            RELATEDTABLE(                                               -- Now a filter context is introduced since the table is filtered to only return the values that match the foreign key on the many side.
+                                'Sales by Store'                                        -- All the values for for instance "Beverages" are then aggregated and a new filter context is introduced when the aggregation i returned.
+                            ), 
+                            'Sales by Store'[quantity_sold]                             -- Bottomline, use RELATEDTABLE when standing on the one side of a table and one wants to fetch values from the many side.
+                            * 
+                            'Sales by Store'[unit_price]
+                        )
+                    )
+                )
