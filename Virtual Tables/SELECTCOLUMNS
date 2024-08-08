@@ -1,0 +1,18 @@
+SELECTCOLUMNS =
+FILTER(                                                                                                  -- Returns a table with selected columns from the table plus any new columns specified by the DAX expressions
+    SELECTCOLUMNS(                                                                                      -- Since SELECTCOLUMNS is an iterator also, FILTER can be used to limit the number of rows to be scanned or included.
+        'Product',                                                                                      -- First, the name of the table must be specified. There must always be atleast one column stated in the function.
+        'Product'[Id],                                                                                  -- All the rows from the Product ID Column is retrived.        
+        'Product'[Product],
+        'Product'[Category],
+        "Sales", CALCULATE(                                                                             -- As stated, new columns can be added to the table in the by applying DAX functions. Here, the Sales for each
+            SUMX(                                                                                       -- Product Category is retrieved by using RELATEDTABLE to look into a table on the many side of the relation.
+                RELATEDTABLE(
+                    'Sales'
+                ),
+                'Sales'[Quantity] * 'Sales'[Unit Price]
+            )
+        )                                                                          
+    ),
+    'Product'[Id] <= 10                                                                                 -- The physical table is reduced to a virutal table only including the rows where Column Id < 10.
+)
