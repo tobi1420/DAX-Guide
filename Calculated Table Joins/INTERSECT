@@ -1,7 +1,7 @@
-Returning Customers Between Week 45 and 46 = 
-VAR _week45 = 
-    CALCULATETABLE(
-        SUMMARIZE(
+Returning Customers Between Week 45 and 46 =                                                                                            -- Longer script but the most important is that INTERSECT requires two tables with excactly the
+VAR _week45 =                                                                                                                           -- same number of columns with corresponding names.
+    CALCULATETABLE(                                                                                                                     -- INTSERSECT unions the data of table A and B only for those rows that are present in both tables.
+        SUMMARIZE(                                                                                                                      -- Can be used to investigate returning customers for a given period.
             'Sales by Store', 
             'Sales by Store'[customer_id]
         ),
