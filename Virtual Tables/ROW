@@ -1,0 +1,8 @@
+ROW =                                                                                               --Returns a table with a single row containing values that result from the expressions given to each colum
+    ROW(
+        "Customer Sales", CALCULATE(
+                                SUMX(
+                                    'Sales', 'Sales'[Quantity] * 'Sales'[Unit Prince]
+                                )
+                            )
+    )
