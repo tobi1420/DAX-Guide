@@ -1,0 +1,5 @@
+UNION =                                                                                     --Combines or ”stacks” rows from two or more tables sharing the same column structure
+UNION(
+    'Table1', 
+    'Table2'
+)
