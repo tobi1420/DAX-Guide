@@ -1,0 +1,10 @@
+OFFSET FUNCTION = 
+CALCULATE(
+    [Value Decrease],
+    OFFSET(
+        -1, 
+        ALL(Items[number]),
+        ORDERBY(
+            Items[number]
+        )
+    ))
