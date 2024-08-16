@@ -18,6 +18,6 @@ IF(
                 'Calendar'[Date] <= _maxDate
             )
         ),
-        'Value Entries'[Item_Ledger_Entry_Type] IN {"Purchase"}                     -- To keep it simple, the item ledger entry type is picked to distinguish between sales and purchase activitiy etc.
+        'Value Entry'[Item_Ledger_Entry_Type] IN {"Purchase"}                     -- To keep it simple, the item ledger entry type is picked to distinguish between sales and purchase activitiy etc.
     )
 )
