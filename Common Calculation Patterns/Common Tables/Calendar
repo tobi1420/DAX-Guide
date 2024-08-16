@@ -1,4 +1,4 @@
-DateTable = 
+Calendar = 
 VAR MinDate = CALCULATE(MIN('Value Entries'[Posting_Date]))
 VAR MaxDate = CALCULATE(MAX('Value Entries'[Posting_Date]))
 
