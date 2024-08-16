@@ -1,0 +1,23 @@
+Value Decrease =                                                                    -- Value Decrease calculates all the activities marked as sale from the item ledger entry type 
+VAR _minDate = MIN('Calendar'[Date])                                                -- Opposite to the Primo and Ultimo Calculations, this time the filter is set to be between
+VAR _maxDate = MAX('Calendar'[Date])                                                -- Minumim and Maximum date in the current filter context.
+
+RETURN
+IF(
+    NOT ISBLANK(
+        [Value Primo]
+    ),
+    CALCULATE(
+        [Value Actual],
+        KEEPFILTERS(
+            FILTER(
+                ALL(
+                    'Calendar'
+                ),
+                'Calendar'[Date] > _minDate &&                                            
+                'Calendar'[Date] <= _maxDate
+            )
+        ),
+        'Value Entries'[Item_Ledger_Entry_Type] IN {"Sale"}                         -- To keep it simple, the item ledger entry type is picked to distinguish between sales and purchase activitiy etc.
+    )
+)
