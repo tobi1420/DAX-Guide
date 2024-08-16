@@ -2,6 +2,6 @@ Actual Value =
 CALCULATE(
     SUMX(
         'Value Entry',
-        'Value'Entry[Cost_Amount_Actual]
+        'Value Entry'[Cost_Amount_Actual]
     )
 )
