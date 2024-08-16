@@ -1,4 +1,4 @@
-Value Primo = -- Value Primo calculates the measure for the current value of the inventory
+Value Primo =                                                       -- Value Primo calculates the measure for the current value of the inventory
 VAR _minDate = DATE(1751, 1, 1)                                     -- all the way back to first transaction till the minimum day in the filter context
 VAR _maxDate = MIN('Calendar'[Date])                                -- Calculate is used to destroy current filter context for all columns for calendar table.
                                                                     -- Then the new filter context checks if date in current filter context is greater than first
