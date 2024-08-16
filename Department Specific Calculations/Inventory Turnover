@@ -1,7 +1,0 @@
-Inventory Turnover =                                                        -- Inventory Turnover is a classical kpi figure that explains how many times for a given period
-ABS(                                                                        -- the inventory size is sold per year.
-    DIVIDE(
-        [Value Decrease],
-        ([Value Primo] + [Value Ultimo])/2,0
-    )
-)
