@@ -1,7 +1,7 @@
-Days Since Last Sales Date = 
-VAR _table = 
-    CALCULATETABLE(
-        SELECTCOLUMNS(
+Days Since Last Sales Date =                                                                           -- This measure calculates the last date for where a given value is present for the cost_amount_actual.
+VAR _table =                                                                                           -- Since this is based on the last sales date a CALCULATETABLE is used to filter only entry-types of the type
+    CALCULATETABLE(                                                                                    -- Sale. Furthermore, this is for all transactions therefore the filter context for calendar is destroyed by FILTER and
+        SELECTCOLUMNS(                                                                                 -- Calculate.  
             ALL('Value Entry'),  // Removes outer filter context from 'Value Entries'
             "Post", 'Value Entry'[Posting_Date]
         ),
