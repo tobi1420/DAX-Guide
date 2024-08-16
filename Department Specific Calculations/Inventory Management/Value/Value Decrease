@@ -3,21 +3,16 @@ VAR _minDate = MIN('Calendar'[Date])                                            
 VAR _maxDate = MAX('Calendar'[Date])                                                -- Minumim and Maximum date in the current filter context.
 
 RETURN
-IF(
-    NOT ISBLANK(
-        [Inventory Value Primo]
+CALCULATE(
+    [Value Actual],
+    KEEPFILTERS(
+        FILTER(
+            ALL(
+                'Calendar'
+            ),
+            'Calendar'[Date] > _minDate &&                                            
+            'Calendar'[Date] <= _maxDate
+        )
     ),
-    CALCULATE(
-        [Value Actual],
-        KEEPFILTERS(
-            FILTER(
-                ALL(
-                    'Calendar'
-                ),
-                'Calendar'[Date] > _minDate &&                                            
-                'Calendar'[Date] <= _maxDate
-            )
-        ),
-        'Value Entry'[Item_Ledger_Entry_Type] IN {"Sale"}                         -- To keep it simple, the item ledger entry type is picked to distinguish between sales and purchase activitiy etc.
-    )
+    'Value Entry'[Item_Ledger_Entry_Type] IN {"Sale"}                               -- To keep it simple, the item ledger entry type is picked to distinguish between sales and purchase activitiy etc.
 )
