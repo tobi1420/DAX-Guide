@@ -5,7 +5,7 @@ VAR _maxDate = MAX('Calendar'[Date])                                            
 RETURN
 IF(
     NOT ISBLANK(
-        [Value Primo]
+        [Inventory Value Primo]
     ),
     CALCULATE(
         [Value Actual],
