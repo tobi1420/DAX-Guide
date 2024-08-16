@@ -1,4 +1,4 @@
-Actual Value = 
+Value Actual = 
 CALCULATE(
     SUMX(
         'Value Entry',
