@@ -1,0 +1,16 @@
+Total Cost = 
+CALCULATE(
+    SUMX(
+        'Value Entry',
+        'Value Entry'[Cost_Amount_Actual]
+    ),
+    TREATAS(
+        SUMMARIZE(
+            'Sales Data',
+            'Sales Data'[number],
+            'Sales Data'[lineObjectNumber]
+        ),
+        'Value Entry'[Document_No],
+        'Value Entry'[Item_No]
+    )
+)
