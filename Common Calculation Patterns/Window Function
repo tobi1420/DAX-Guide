@@ -1,0 +1,10 @@
+Inventory Accumulating = 
+CALCULATE(
+    [Value Decrease],
+    WINDOW(
+        1, ABS,
+        0, REL,
+        ALL(Items[number]),
+        ORDERBY(Items[number])
+    )
+)
