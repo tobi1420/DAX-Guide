@@ -1,4 +1,4 @@
-MIN =                                                   -- min returns the min value of either a string or a number. Can also be used to compare two values and hereby finding max by applying the second argument.
+MIN =                                                   -- Min returns the min value of either a string or a number. Can also be used to compare two values and hereby finding max by applying the second argument.
 MIN(
     'Sales'[Quantity]                                   -- The chosen column here is Quantity.
 )
