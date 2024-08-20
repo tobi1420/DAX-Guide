@@ -1,0 +1,40 @@
+Time Dimension = 
+ADDCOLUMNS(
+    ADDCOLUMNS(
+        ADDCOLUMNS(
+            GENERATESERIES(
+                1, 1440, 1
+            ),
+            "Time Key", FORMAT(([Value]/1440), "hh:mm:ss")
+        ),
+        "Time 5 min Bin", FORMAT(FLOOR([Time Key], "00:05"), "hh:mm:ss"),
+        "Time 10 min Bin", FORMAT(FLOOR([Time Key], "00:10"), "hh:mm:ss"),
+        "Time 15 min Bin", FORMAT(FLOOR([Time Key], "00:15"), "hh:mm:ss"),
+        "Time 20 min Bin", FORMAT(FLOOR([Time Key], "00:20"), "hh:mm:ss"),
+        "Time 30 min Bin", FORMAT(FLOOR([Time Key], "00:30"), "hh:mm:ss"),
+        "Time 60 min Bin", FORMAT(FLOOR([Time Key], "1:00"), "hh:mm:ss")
+    ),
+    /* Customer Specific settings */
+        "Period of day", SWITCH(
+                         TRUE(),
+                         [Time 60 min Bin] IN {"01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00"}, "Late Night",
+                         [Time 60 min Bin] IN {"06:00:00", "07:00:00", "08:00:00", "09:00:00", "10:00:00"}, "Morning",
+                         [Time 60 min Bin] IN {"11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00"}, "Noon",
+                         [Time 60 min Bin] IN {"16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00"}, "Afternoon",
+                         [Time 60 min Bin] IN {"21:00:00", "22:00:00", "23:00:00", "00:00:00"}, "Evening"
+                    ),
+        "Wokring Shift", SWITCH(
+                         TRUE(),
+                         [Time 60 min Bin] IN {"01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00", "08:00:00"}, "Night Shift",
+                         [Time 60 min Bin] IN {"09:00:00", "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00"}, "Morning Shift",
+                         [Time 60 min Bin] IN {"17:00:00", "18:00:00", "19:00:00", "20:00:00", "21:00:00", "22:00:00", "23:00:00", "00:00:00"}, "Evening Shift"
+        ), 
+        "Break Time",   SWITCH(
+                        TRUE(),
+                        [Time 60 min Bin] IN {"12:00:00"}, "Lunch Break",
+                        [Time 60 min Bin] IN {"18:00:00"}, "Dinner Break",
+                        [Time 60 min Bin] IN {"02:00:00"}, "Night Break",
+                                                           "Working Hours"
+
+                      
+))
