@@ -1,0 +1,20 @@
+Testing = 
+ADDCOLUMNS(
+    DATATABLE( 
+        "Value", STRING, {
+            {"PCNF CNF MCNF REL"},
+            {"PCNF REL PRT"},
+            {"PCNF MCNF CNF"},
+            {"CNF MCNF PCNF"},
+            {"MCNF REL PRT"}
+
+        }
+    ),
+    "CNF",  SWITCH(
+            TRUE(),
+            LEFT([Value], 4) = "CNF ", "OUT",
+            RIGHT([Value], 4) = " CNF", "OUT",
+            CONTAINSSTRING([Value], " CNF "), "OUT",
+            "IN"
+            )
+        )
