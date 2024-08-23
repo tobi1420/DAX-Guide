@@ -1,0 +1,14 @@
+Present Employees =                                                                         -- This measure calculates for a given period the present or overlapping activities between two date 
+VAR _minDate = MIN('Calendar'[Date])                                                        -- Typically a starting date and an ending date. It is important to make sure that there is no 
+VAR _maxDate = MAX('Calendar'[Date])                                                        -- active relationsship between the fact and the dimension. Alternatively one can apply CROSSFILTER With NONE for direction.
+VAR _calculate = 
+CALCULATE(
+    [Count Id],
+    'HR Employee'[End Date] >= _minDate &&
+    'HR Employee'[Start Date] <= _maxDate,
+    CROSSFILTER(
+        'Calendar'[Date], 'HR Employee'[Start Date], None
+    )
+)
+RETURN
+_calculate
