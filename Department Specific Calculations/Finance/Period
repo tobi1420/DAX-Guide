@@ -1,0 +1,22 @@
+Finance Period Excl. Reset = 
+VAR _minDate = MIN('Calendar'[Date])
+VAR _maxDate = MAX('Calendar'[Date])
+
+VAR _filter = 
+    FILTER(
+        ALL(
+            'Calendar'
+        ),
+        'Calendar'[Date] >= _minDate &&
+        'Calendar'[Date] <= _maxDate
+    )
+
+VAR _calculate = 
+    CALCULATE(
+        Finance[Finance Period],
+        _filter,
+        'GL Accounts'[accountSubcategoryDescript] <> "Overført resultat"
+    )
+RETURN
+--_minDate & " _ " & _maxDate & " _ " & COUNTROWS(_filter) & " _ " & _calculate
+_calculate
