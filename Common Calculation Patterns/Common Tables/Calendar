@@ -1,43 +1,55 @@
 Calendar = 
-VAR MinDate = CALCULATE(MIN('Value Entries'[Posting_Date]))
-VAR MaxDate = CALCULATE(MAX('Value Entries'[Posting_Date]))
+VAR MinDate = CALCULATE(MIN('Sales Invoice Header'[postingDate]))
+VAR MaxDate = CALCULATE(MAX('Sales Invoice Header'[postingDate]))
 
 RETURN
 ADDCOLUMNS(
-    CALENDAR(MinDate, MaxDate),
-    "Year", YEAR([Date]),
-    "Month Number", MONTH([Date]),
-    "Month Name", FORMAT([Date], "MMMM"),
-    "Month & Year", FORMAT([Date], "MMM YYYY"),
-    "Day of Week Number", WEEKDAY([Date]),
-    "Day of Week Name", FORMAT([Date], "dddd"),
-    "Week Number", WEEKNUM([Date]),
-    "Quarter", "Q" & FORMAT(QUARTER([Date]), "0"),
-    "Year & Quarter", FORMAT([Date], "YYYY") & " Q" & FORMAT(QUARTER([Date]), "0"),
-    "Is Weekday", IF(WEEKDAY([Date], 2) < 6, TRUE, FALSE),
-    "Is Weekend", IF(WEEKDAY([Date], 2) >= 6, TRUE, FALSE),
-    "Fiscal Year", IF(MONTH([Date]) >= 7, YEAR([Date]) + 1, YEAR([Date])),
-    "Fiscal Quarter", 
-        "Q" & FORMAT(
-            SWITCH(
-                TRUE(),
-                MONTH([Date]) >= 7 && MONTH([Date]) <= 9, 1,
-                MONTH([Date]) >= 10 && MONTH([Date]) <= 12, 2,
-                MONTH([Date]) >= 1 && MONTH([Date]) <= 3, 3,
-                4
-            ), "0"
-        ),
-    "Fiscal Year & Quarter", 
-        FORMAT(
-            IF(MONTH([Date]) >= 7, YEAR([Date]) + 1, YEAR([Date])), 
-            "0000"
-        ) & " Q" & FORMAT(
-            SWITCH(
-                TRUE(),
-                MONTH([Date]) >= 7 && MONTH([Date]) <= 9, 1,
-                MONTH([Date]) >= 10 && MONTH([Date]) <= 12, 2,
-                MONTH([Date]) >= 1 && MONTH([Date]) <= 3, 3,
-                4
-            ), "0"
+    ADDCOLUMNS(
+        CALENDAR(MinDate, MaxDate),
+        "Year", YEAR([Date]),
+        "Month Number", MONTH([Date]),
+        "Month Name", FORMAT([Date], "MMMM"),
+        "Month & Year", FORMAT([Date], "MMM YYYY"),
+        "Day of Week Number", WEEKDAY([Date]),
+        "Day of Week Name", FORMAT([Date], "dddd"),
+        "Week Number", WEEKNUM([Date]),
+        "Quarter", "Q" & FORMAT(QUARTER([Date]), "0"),
+        "Year & Quarter", FORMAT([Date], "YYYY") & " Q" & FORMAT(QUARTER([Date]), "0"),
+        "Is Weekday", IF(WEEKDAY([Date], 2) < 6, TRUE, FALSE),
+        "Is Weekend", IF(WEEKDAY([Date], 2) >= 6, TRUE, FALSE),
+        "Fiscal Year", IF(MONTH([Date]) >= 7, YEAR([Date]) + 1, YEAR([Date])),
+        "Fiscal Quarter", 
+            "Q" & FORMAT(
+                SWITCH(
+                    TRUE(),
+                    MONTH([Date]) >= 7 && MONTH([Date]) <= 9, 1,
+                    MONTH([Date]) >= 10 && MONTH([Date]) <= 12, 2,
+                    MONTH([Date]) >= 1 && MONTH([Date]) <= 3, 3,
+                    4
+                ), "0"
+            ),
+        "Fiscal Year & Quarter", 
+            FORMAT(
+                IF(MONTH([Date]) >= 7, YEAR([Date]) + 1, YEAR([Date])), 
+                "0000"
+            ) & " Q" & FORMAT(
+                SWITCH(
+                    TRUE(),
+                    MONTH([Date]) >= 7 && MONTH([Date]) <= 9, 1,
+                    MONTH([Date]) >= 10 && MONTH([Date]) <= 12, 2,
+                    MONTH([Date]) >= 1 && MONTH([Date]) <= 3, 3,
+                    4
+                ), "0"
+            )
+    ),
+    "Is Before Current Month", 
+    VAR _today = TODAY()
+    VAR _lastSalesDate = DATE(YEAR(_today), MONTH(_today), 1)
+    VAR _switch = 
+        SWITCH(
+            TRUE(),
+            [Date] < _lastSalesDate, "Before Current Month", "After Current Month"
         )
+    RETURN
+_switch
 )
