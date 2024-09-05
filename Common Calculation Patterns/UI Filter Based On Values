@@ -1,0 +1,109 @@
+Currently Filtered = 
+
+IF(
+    ISFILTERED(
+        Survey[2. Your Age]
+    ),
+    " | Age: " &
+    CONCATENATEX(
+        VALUES(Survey[2. Your Age]),
+         Survey[2. Your Age], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[3. Are you currently....?]
+    ),
+    UNICHAR(10) & " | Postion: " &
+    CONCATENATEX(
+        VALUES(Survey[3. Are you currently....?]),
+         Survey[3. Are you currently....?], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[4. What is your annual income?]
+    ),
+    UNICHAR(10) & " | Income: " &
+    CONCATENATEX(
+        VALUES(Survey[4. What is your annual income?]),
+         Survey[4. What is your annual income?], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[5. How often do you visit Starbucks?]
+    ),
+    UNICHAR(10) & " | Visit Frequency: " &
+    CONCATENATEX(
+        VALUES(Survey[5. How often do you visit Starbucks?]),
+         Survey[5. How often do you visit Starbucks?], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[6. How do you usually enjoy Starbucks?]
+    ),
+    UNICHAR(10) & " | Enjoyment: " &
+    CONCATENATEX(
+        VALUES(Survey[6. How do you usually enjoy Starbucks?]),
+         Survey[6. How do you usually enjoy Starbucks?], ", ")
+)
+
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[7. How much time do you normally  spend during your visit?]
+    ),
+    UNICHAR(10) & " | Time Spent: " &
+    CONCATENATEX(
+        VALUES(Survey[7. How much time do you normally  spend during your visit?]),
+         Survey[7. How much time do you normally  spend during your visit?], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[8. The nearest Starbucks's outlet to you is...?]
+    ),
+    UNICHAR(10) & " | Nearest Starbucks: " &
+    CONCATENATEX(
+        VALUES(Survey[8. The nearest Starbucks's outlet to you is...?]),
+         Survey[8. The nearest Starbucks's outlet to you is...?], ", ")
+)
+
+& 
+
+IF(
+    ISFILTERED(
+        Survey[9. Do you have Starbucks membership card?]
+    ),
+    UNICHAR(10) & " | Have Membership Card: " &
+    CONCATENATEX(
+        VALUES(Survey[9. Do you have Starbucks membership card?]),
+         Survey[9. Do you have Starbucks membership card?], ", ")
+)
+
+&
+
+IF(
+    ISFILTERED(
+        Survey[10. What do you most frequently purchase at Starbucks?]
+    ),
+    UNICHAR(10) & " | Often Purchase: " &
+    CONCATENATEX(
+        VALUES(Survey[10. What do you most frequently purchase at Starbucks?]),
+         Survey[10. What do you most frequently purchase at Starbucks?], ", ")
+)
+
