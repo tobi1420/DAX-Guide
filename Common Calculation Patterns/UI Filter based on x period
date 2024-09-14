@@ -1,0 +1,25 @@
+Total Sales N Last Months = 
+VAR _periods = [Selected Period]
+VAR _maxDate = MAX('Calendar'[Date]) // Find the Max Date of the current filter context (explicit filters for year and month).
+
+VAR _salesLastPeriods = DATESINPERIOD('Calendar'[Date], _maxDate, -_periods, MONTH) // Define interval for which the filter is supposed to traverse back in time.
+
+VAR _calculate = 
+    CALCULATE(
+        [Total Sales], 
+        _salesLastPeriods,      // 1)  Firstly the new filter context is introduced. But it is not yes applied. This is performed during step 2.
+        KEEPFILTERS(            // 4)  When the filter context is dropped at the ALL() we must again invite the filter context into the calculation. Therefore we use KEEPFILTERS
+            ALL()               // 3)  Now the filter from step 2 Calendar N Last Months is traversing to Calendar - but the Calendar filter is affected from the explicit filter context. 
+                                //     Therefore it is necessary to eliminate the filter context from the outer context or else only the intersection between the two date tables are returned.
+
+        )
+        , 
+        USERELATIONSHIP(        // 2)  Understand that when using USERELATIONSHIP the filter context of _salesLastPeriods is propagated to Calendar Last N Months even though the filter direction is one directional. 
+                                //     This means that the number of _periods selected is the the initial filter context that then traverse from Calendar Last N Months to Calendar.
+            'Calendar Last N Months'[Date],
+            'Calendar'[Date]
+        ) 
+    )
+
+RETURN
+_calculate
