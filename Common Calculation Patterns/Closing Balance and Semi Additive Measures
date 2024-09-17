@@ -1,0 +1,9 @@
+Last Day Opening Price = 
+CALCULATE(
+    LASTNONBLANKVALUE(
+        'Stock Data'[Date], 
+        [Opening Price]
+    ),
+    PARALLELPERIOD('Calendar'[Date], 0, MONTH
+    )
+)
