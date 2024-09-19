@@ -1,3 +1,5 @@
+// Remember to use the shadow calendar table as the rows/axises for the visuals to ensure that it is the filter propagation from there that is used.
+
 Total Sales N Last Months = 
 VAR _periods = [Selected Period]
 VAR _maxDate = MAX('Calendar'[Date]) // Find the Max Date of the current filter context (explicit filters for year and month).
