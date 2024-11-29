@@ -1,0 +1,9 @@
+Types = 
+CALCULATE(
+    CONCATENATEX(
+        VALUES('Pokemon Data'[Type]),  // Get unique values for 'Type'
+        [Type], 
+        ", "
+    ),
+    ALLEXCEPT('Pokemon Data', 'Pokemon Data'[Name])  // Keeps the current 'Name' context
+)
