@@ -1,0 +1,32 @@
+/* Growth is calculated as the difference between the starting point and ending point */
+/* Usually the Ending Point is the Current Period and the greatest value. */
+/* The starting point is the smallest value for the comparison */
+
+/* Example: In current year 2024 we sell 3.102.292 units of PCs */
+/* In 2020 we only sold 2.834.292 units. 
+What is the growth of units sold? 
+
+1) Find Begining year: 2020 (2.834.292)
+2) Find Ending year: 2024 (3.102.292)
+3) Find the difference between Beginning Year and Ending Year: 
+    (Ending Year - Beginning Year)
+    (3.102.292 - 2.834.292 = 268.000)
+
+Growth = 
+CALCULATE(
+    [Sales] - [Sales Last Period]
+)
+
+4) Find the growth in percent between Beginning Year and Ending Year: 
+    (Ending Year - Beginning Year / Beginning Year)
+    (3.102.292 - 2.834.292 / 2.834.292 = 0.0945 * 100 = 9,45%)
+
+Use this method everytime to get the numbers correct!
+
+Growth Pct. = 
+CALCULATE(
+    DIVIDE(
+        [Sales] - [Sales Last Period],
+        [Sales Last Period]
+    )
+)
