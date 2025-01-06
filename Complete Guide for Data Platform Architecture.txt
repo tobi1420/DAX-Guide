@@ -1,0 +1,111 @@
+# The Following document is a complete guide to successfully build the foundation of a data platform in Microsoft Azure. 
+# The guide is split into different sections that describes each of the steps in great detail. 
+# The guide is written 06-01-2025 by Business Intelligence Consultant Tobias Larsen. 
+
+# Setup Permision between Microsoft Azure and Microsoft Business Central for API Requests.
+
+    # For Business Central Cloud tenants one must create an App Registration in Microsoft Azure. Consult this guide if in doubt: https://yzhums.com/20690/
+    # Go to Azure App Registration https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
+    # Create a new registration and enter name and set supported account type to single tenant. Suggested naming convention: bc-adp-app
+
+    # Go to Azure Authentication https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/{ApplicationID}/Authentication/
+    # Add a platform of type Web and set the Redirect URI to https://localhost:8080/login
+    # Save the Application ID for later use in Postman for Token generation
+
+    # Go to API Permission and add a permision https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI
+    # Choose Dynamics 365 Business Central and the type Delegated Permision. Mark user_impersonation and Financials.ReadWrtie.All and add the permision
+    # Apply the same steps but this time choose Application Permision. Mark app_access, API.ReadWrite.All and Automation.ReadWrite.All and add the permision
+    # Grant Admin Consent for the App by clicking next to add permision. Click yes and all permisions are granted for the application
+
+    # Go to Certificates and Secrets https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials
+    # Create new Client Secret with an Description and an Expiration Date of chosen period
+    # Save the Client Secrets Value and Secret ID for later use in Postman for Token generation
+    # The Secret ID Value will not be shown again after window is closed so please do copy this immediately. 
+
+    # Config in Azure is completed
+
+    # Go to Business Central and search for 'Microsoft Entra Applications'.
+    # Create new Application and paste the Application ID in the Client ID Field. Remeber to include the ID in curly brackets {}
+    # Set the state to 'Enabled'
+    # Assign permision in Business Central for the Application with the permision role of 'D365 BUS PREMIUM', 'D365 FINANCE' and 'D365 FULL ACCESS'
+    # Search for 'Microsoft Entra Applications again and ensure that the Application is set to 'Enabled'
+
+    # Config in Business Central is Completed
+
+# Develop Business Central Extensions for specific pages to retrieve data via API Requests in Developer/Sandbox Environment. 
+
+    # For Business Central Extensions one must create an AL Package to expose certain Tables as Endpoints.
+    # Download Visual Studio: https://visualstudio.microsoft.com/
+    # Navigate to Extensions Pane
+    # Install AL Language extension for Microsoft Dynamics 365 Business Central by Microsoft
+    # Install AZ AL Dev Tools/AL Code Outline by Andrzej Zwierzchowski
+
+    # Config for Visual Studio is Completed
+
+    # Open a new Window in Visual Studio
+    # Press 'F1' on the keyboard and type 'AL: Go!'
+    # Choose a path on your computer for the Package
+    # Choose newest Business Central release wave and version as Target Platform
+    # Tick 'Trust the authors of all files in the parent folder 'AL' and click 'Yes, I trust the authors'    
+    # Press 'F1' and type 'Download Symbols' to get all the meta data for the Business Central Tentant
+    # In the 'launch.json' file adjust the variables 
+
+      name:                 Microsoft cloud sandbox/production
+      environmentType:      Sandbox/Production  
+      environmentName:      sandbox/production
+
+    # In the 'app.json' file adjust the variables
+
+      name:                 Name of the extension (Customer API Endpoints)
+      publisher:            Company of the publisher (Relesys)
+      version:              1.0.0.0 (must always be incremented for Production Per Tenant Extension)
+    
+      "idRanges": [{"from": 50100, "to": 50149}] - Adjust this to include unused table Ids.
+
+    # Config for AL Extension is Completed
+
+    # Right click in the Explorer Area and choose 'New AL File Wizard (AZ AL Dev Tools)
+    # Choose 'Page' in the dropdown 
+    # Set Page Type to 'API'
+
+      Object Name:          Name of Object
+      Source Table Name:    Choose table from dropdown. All tables are available due to Symbols. 
+      API Group:            Set API Pusblisher to Company Name (camelCase)
+      API Pusblisher:       Name of the Developer who made the API.
+      Entitiy Name:         Name of Object
+      EntitySet Name:       Name of Object in Pluralis
+
+    # In the actual AL File set the variable Editable = false;
+
+#### ENrich Further Tomorrow.
+
+
+
+ 
+# Test and configure OAuth2 Authentication for Business Central API. 
+
+# Setup all necessary Resources for a given Resource Group in Microsoft Azure 
+    # Azure Data Factory
+    # Azure Blob Storage Gen 2
+    # Azure DataBricks
+    # Azure SQL Server
+    # Azure Analysis Services
+    # Azure Key Vault
+    # Azure DevOps 
+
+
+# Setup User Acceptance Test and Production Environment
+
+# Prepare Bronze, Silver and Gold Architecture for Azure Blob Storage Gen 2 for each Environment.
+
+# Build Generic Azure Data Factory Pipeline for API Requests.
+
+# Build Generic Azure DataBricks Notebook for Data Transformation
+
+# Setup Azure SQL Database for Silver Layer Data
+
+# Setup Azure Analysis Service
+
+# Setup Workspace for Power BI Service for User Acceptance Test and Production Environment.
+
+# All Set and Done.
