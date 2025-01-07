@@ -75,22 +75,285 @@
       Entitiy Name:         Name of Object
       EntitySet Name:       Name of Object in Pluralis
 
+    # Pick only the necessary fields and flow fields from the field overview to enhance performance.
+
     # In the actual AL File set the variable Editable = false;
 
-#### ENrich Further Tomorrow.
+    # Press 'F5' on keyboard to build an AL package and hereafter deploy this to the Sandbox Environment
+    # Assign permision in Business Central for the Application with the permision role of 'D365 BUS PREMIUM', 'D365 FINANCE' and 'D365 FULL ACCESS'
+    # Search for 'Microsoft Entra Applications again and ensure that the Application is set to 'Enabled'
+
+    # Config and Development of API Endpoints is Completed
 
 
+# Develop Business Central Extensions for specific pages to retrieve data via API Requests in Production Environment.
+    # Since production works with PTE (Per Tenant Extensions) one must manually upload, uninstall and install AL Package for each deploy.
+    # Assuming a Development Extension is made proceed with the following steps:
+    # Go to Production Environment
+    # Search for 'Extension Management'
+    # Click on 'Manage' on the Page Ribbon
+    # Click 'Upload Extension'
+    # In AL Package within Visual Studio type 'F1' and write 'AL: Package' to prepare the extension for upload. 
+    # In Business Central upload .app file from the Root folder of the package - Default Publisher_ProjectName_1.0.0.0.app
+    # Tick 'By Deploying this extension...'
+    # Press Deploy
+    # Too see installation stauts go to Manage from the ribbon and click 'Installation Status'
+    # When Production must be updated one must uninstall and unpublish the extension by clicking Uninstal and herafter Unpublish. 
+      Then the version number must be incremented from the AL Package and then re-uploaded.
+    # Assign permision in Business Central for the Application with the permision role of 'D365 BUS PREMIUM', 'D365 FINANCE' and 'D365 FULL ACCESS'
+      In the Microsoft Entra Application Page.
 
+
+    # Config and Development of API Endpoint for Production is Completed
  
 # Test and configure OAuth2 Authentication for Business Central API. 
+    # Go to Postman and test the following endpoint for companies in a given tenant: https://www.postman.com/downloads/
+    # https://api.businesscentral.dynamics.com/v2.0/{TENANTID}/sandbox/api/v2.0/companies. 
+      The structure of the link will be analyzed later in this guide (The Tenant ID can be found in the URL of the Business Central Instance)
+      https://businesscentral.dynamics.com/{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+    # Of Course an error will occur since the call can not be authorized.
+
+    # Go to the tab Authorization and choose 'Oauth 2.0' 
+    # Choose Add Authentication Data to Request Headers
+    # In the Request Header View Choose 'Client Credentials' 
+
+    # Set the Access Token URL to https://login.microsoftonline.com/{TENANTID}/oauth2/v2.0/token. Tenant ID can be found in the URL to your Business Central.
+    # Set the Client ID to the Application ID saved earlier (App Registration Overview)
+    # Set the Client Secret ID to the Client Secret Value saved earlier (This can not be accesed after creation. Please keep it secret, keep it safe)
+    # Set the Scope to https://api.businesscentral.dynamics.com/.default
+    # Set the Client Authentication to 'Send Client Credentials in Body'
+    # Click on 'Get New Access Token' and copy the generated token
+    # Click on 'Use this token'
+    # Set the header prefix to 'Bearer'
+
+# Config for Authorization in Postman is Completed
+
+# Call Business Central API Endpoint Within Postman
+    # Besides the custom API Endpoints Microsoft Provides some Generic Calls.
+    # Test the following endpoint to ensure Authorization is valid: https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/v2.0/companies
+    # One should receive something similar: 
+    
+    {
+        "@odata.context": "https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/v2.0/companies",
+        "value": [
+            {
+                "id": "b45a2513-9023-ef11-8411-6045bde99c01",
+                "systemVersion": "24.5.23489.23968",
+                "timestamp": 3972,
+                "name": "CRONUS Danmark A/S",
+                "displayName": "",
+                "businessProfileId": "",
+                "systemCreatedAt": "2024-06-05T23:05:22.84Z",
+                "systemCreatedBy": "00000000-0000-0000-0000-000000000001",
+                "systemModifiedAt": "2024-06-05T23:05:22.84Z",
+                "systemModifiedBy": "00000000-0000-0000-0000-000000000001"
+            }
+        ]
+    }
+
+    # Structure of the Business Central API Endpoint for Generic Microsoft Requests
+    # https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/v2.0/companies
+
+    api :                                                     Indicate that the https request will be aimed towards an api
+    businesscentral.dynamics.com :                            Base url for the api
+    v2.0 :                                                    Api version to be used
+    {Tenant ID} :                                             Tenant id
+    sandbox :                                                 Environment
+    api :                                                     Api type
+    v2.0 :                                                    Api publisher
+    companies :                                               Entityname (typically table name)
+
+    # Structure of the Central API Endpoint for Custom API's with custom API Group and API Publisher to retrieve All Companies on Tenant
+    # https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/{APIPublisher}/APIGroup/v1.0/companies
+    # Remember, not all entitites can be called out of the box. One must develop Custom API's in AL and remember to set Editable to False in entity config
+
+    api :                                                     Indicate that the https request will be aimed towards an api
+    businesscentral.dynamics.com :                            Base url for the api
+    v2.0 :                                                    Api version to be used
+    {Tenant ID} :                                             Tenant id
+    sandbox :                                                 Environment
+    api :                                                     Api type
+    APIPublisher :                                            Api publisher (Specific Developer)
+    tLDev :                                                   Api group (Typically Company Name)
+    v1.0 :                                                    Api version
+    companies :                                               Entityname (Typically Table name)
+
+    # Structure of the Central API Endpoint for Custom API's with custom API Group and API Publisher to retrieve All records for a given table for one Company
+    # https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/{APIPublisher}/{APIGroup}/v1.0/companies({Company ID})/{Entitiy Name}
+    # Remember, not all entitites can be called out of the box. One must develop Custom API's in AL and remember to set Editable to False in entity config
+
+    api :                                                     Indicate that the https request will be aimed towards an api
+    businesscentral.dynamics.com :                            Base url for the api
+    v2.0 :                                                    Api version to be used
+    {Tenant ID} :                                             Tenant id
+    sandbox :                                                 Environment
+    api :                                                     Api type
+    {APIPublisher} :                                          Api publisher (Specific Developer)
+    {APIGroup} :                                              Api group (Typically Company Name)
+    v1.0 :                                                    Api version
+    {Company ID} :                                            Company id Retrieved from /api/{APIPublisher}/APIGroup/v1.0/companies
+    {Entitiy Name} :                                          Name of API Endpoint (Typically Table Name)                                               
+
+    # https://api.businesscentral.dynamics.com/v2.0/{Tenant ID}/sandbox/api/{APIPublisher}/{APIGroup}/v1.0/companies({Company ID})/customers
+    # One should receive something similar: 
+
+    {
+        "@odata.context": "https://api.businesscentral.dynamics.com/v2.0/89a1cf79-7084-42b3-be27-912b312aa9f9/production/api/publisherName/apiGroup/v1.0/$metadata#companies(b45a2513-9023-ef11-8411-6045bde99c01)/customers",
+        "value": [
+            {
+                "@odata.etag": "W/\"JzE5OzIyNDkxMDc1ODk2MTY1NTI5MzYxOzAwOyc=\"",
+                "no": "10000",
+                "name": "Kontorcentralen A/S",
+                "systemId": "c7265cfa-9023-ef11-8411-6045bde99c01"
+                
+            }
+        ]
+    }    
+
+    # Testing of API Calls for Generic and Custom API Endpoints is Completed    
 
 # Setup all necessary Resources for a given Resource Group in Microsoft Azure 
     # Azure Data Factory
-    # Azure Blob Storage Gen 2
-    # Azure DataBricks
-    # Azure SQL Server
-    # Azure Analysis Services
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for 'Data Factory'
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose a name for the Data Factory - naming convention (company-environment-adf)
+        # Tick 'Configure Git later'
+        # Tick Off 'Enable Managed Vitural Network on the default...'
+        # Tick 'Public Endpoint' for Connect Via.
+        # Tick Off 'Enable encryption using a Customer Managed Key'
+        # Optional to set Tags for billing overview
+
+        # Go to the Azure Data Factory Overview
+        # Go to Acces Control (IAM) and ensure that the user whom created the Data Factory is set to Owner.
+    
+    # Config of resource Azure Data Factory is Completed
+
     # Azure Key Vault
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for 'Key Vault'
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose a name for the Key Vault - naming convention ({company}-{environment}-kv)
+        # Choose Region for Instance (Sweden)
+        # Choose 'Standard' for Pricing Tier
+        # Choose 90 days for 'Days to retain deleted vaults'
+        # Tick Disable purge protection (allow key vault and objects to be purged during retention period) for Purge Protection
+        # Tick 'Azure role-based access control (recommended)' for Permission model
+        # Tick 'All networks' for Allow access from:
+        # Optional to set Tags for billing overview
+        
+        # Go to the Azure Key Vault Overview
+        # Go to Acces Control (IAM) 
+        # Click 'Add role assignment'
+        # Choose 'Key Vault Administrator'
+        # Go to 'Members' in Ribbon 
+        # Choose 'User, group, or service principal' for Assign access to
+        # Click on 'Select members' and choose Entra ID
+        # Review and assign the Role
+
+        # Go to the Azure Key Vault Overview
+        # Go to Acces Control (IAM) 
+        # Click 'Add role assignment'
+        # Choose 'Key Vault Reader'
+        # Go to 'Members' in Ribbon 
+        # Choose 'User, group, or service principal' for Assign access to
+        # Click on 'Select members' and choose Entra ID
+        # Review and assign the Role
+
+        # Go to the Azure Key Vault Overview
+        # Go to Acces Control (IAM) 
+        # Click 'Add role assignment'
+        # Choose 'Key Vault Secrets User'
+        # Go to 'Members' in Ribbon 
+        # Choose 'Managed Identity' for Assign access to
+        # Click on 'Select members' and choose Entra ID
+        # Choose Azure Subscription
+        # Choose 'Data Factory (V2)' as Managed Identity
+        # Click on 'Azure Data Factory Resource'
+        # Review and assign the Role
+
+        # Make a secret for Business Central Client ID for Authorization
+        # Go to the Azure Key Vault Overview
+        # Go to objects --> Secrets
+        # Click 'Generate/Import'
+        # Choose a name for the Client ID - naming convention ({company}-{system}-clientid-key-{version})
+        # Insert secret value from App Registration (Application (client) id)
+        # Create the Key
+
+        # Make a secret for Business Central Client Secret for Authorization (Must be kept safe and secret locally because Client Secret cant be viewed after generation!)
+        # Go to the Azure Key Vault Overview
+        # Go to objects --> Secrets
+        # Click 'Generate/Import'
+        # Choose a name for the Client Secret - naming convention ({company}-{system}-clientsecret-key-{version})
+        # Insert secret value from App Registration (Application (client) id)
+        # Create the Key
+
+    # Config of resource Azure Key Vault is Completed for now - More Keys will be added later.
+
+    # Azure Blob Storage Account Generation 2
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for 'Storage Account'
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose a name for the Key Vault - naming convention ({company}-{environment}-sa)
+        # Choose Region for Instance (Sweden)
+        # Choose 'Azure Blob Storage or Azure Data Lake Storage Gen 2' as Primary service
+        # Choose 'Standard - Reccomened for most scenarios (general-purpose v2 account)' as Performance
+        # Choose 'Geo-redundant storage (GRS)' for Redundancy
+        # Tick Require secure transfer for REST API operations
+        # Tick Enable storage account key access
+        # Choose 'Version 1.2' or higher for Minimum TLS version
+        # Choose 'From any storage account' for Permitted scope for copy operations (preview)
+        # Tick 'Enable hierarchical namespace'
+        # Tick Radio Button 'Enable public access from all networks' for Network access
+        # Tick Radio Button 'Microsoft network routing' for Routing preferances
+        # Tick 'Enable soft delete for blobs' and set Retain days to 90
+        # Tick 'Enable soft delete for containers' and set Retain days to 90
+        # Tick 'Enable soft delete for file shares' and set Retain days to 90
+        # Tick Radio Button 'Microsoft-managed keys (MMK) for Encryption type
+        # Tick Radio Button 'Blobs and files only' for Enable support for customer-managed keys
+        # Optional to set Tags for billing overview
+
+        # Go to the Azure Key Vault Overview
+        # Go to Acces Control (IAM) 
+        # Click 'Add role assignment'
+        # Choose 'Storage Blob Data Contributor'
+        # Go to 'Members' in Ribbon 
+        # Choose 'User, group, or service principal' for Assign access to
+        # Click on 'Select members' and choose Entra ID
+        # Review and assign the Role
+
+        # Config of resource Azure Storage Account is Completed
+
+    # Azure DataBricks
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for ' Azure Databricks'
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose a name for the Key Vault - naming convention ({company}-{environment}-databricks)
+        # Choose a name for Managed Resource Group - naming convention ({company}-{environment}-databricks-rg)
+        # Tick Radio Button 'No' for Deploy Azure Databricks workspace with Secure Cluster Connectivity (No Public IP)
+        # Tick Radio Button 'No' for Deploy Azure Databricks workspace in your own Virtual Network (VNet)
+        # Optional to set Tags for billing overview
+
+        # Config of resource Azure Databricks is Completed
+
+    # Azure SQL Server
+
+    
+
+
+    CREATE USER [test-bc-adf] FROM EXTERNAL PROVIDER;
+    ALTER ROLE db_owner ADD MEMBER [test-bc-adf];
+
+
+    # Azure Analysis Services
     # Azure DevOps 
 
 
