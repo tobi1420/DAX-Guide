@@ -328,15 +328,20 @@
         # Click on 'Select members' and choose Entra ID
         # Review and assign the Role
 
+        # Go To Azure Portal
+        # Go to 'Storage Accounts' and pick the newly created Storage Account.
+        # Go to 'Data Storage' and maximize the ribbon. Pick 'Containers'.
+        # Create two new Containers - 'bronze', 'silver' to conduct with the architecture setup. Gold will be in Azure SQL Server Database for database 'Analytics'.
+
         # Config of resource Azure Storage Account is Completed
 
     # Azure DataBricks
         # In Azure go to Resource Groups
         # Click 'Create' to create a new Resource
-        # Search for ' Azure Databricks'
+        # Search for 'Azure Databricks'
         # Choose Azure Subscription
         # Choose Resource Group 
-        # Choose a name for the Key Vault - naming convention ({company}-{environment}-databricks)
+        # Choose a name for the Databricks - naming convention ({company}-{environment}-databricks)
         # Choose a name for Managed Resource Group - naming convention ({company}-{environment}-databricks-rg)
         # Tick Radio Button 'No' for Deploy Azure Databricks workspace with Secure Cluster Connectivity (No Public IP)
         # Tick Radio Button 'No' for Deploy Azure Databricks workspace in your own Virtual Network (VNet)
@@ -345,30 +350,360 @@
         # Config of resource Azure Databricks is Completed
 
     # Azure SQL Server
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for 'Azure SQL'
+        # Choose 'SQL Databases' 
+        # Choose 'Database server'
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose a name for the Azure SQL Server - naming convention ({company}-{environment}-sql-server)
+        # Choose 'Use both SQL and Microsoft Entra Authentication' as Authentication method
+        # Tick Radio Button 'Yes' for Allow Azure services and resources to access this server firewall rules.
+        # Tick Radio Button 'Now now' for Enable Microsoft Defender for SQL
+        # Optional to set Tags for billing overview
 
-    
+        CREATE USER [test-bc-adf] FROM EXTERNAL PROVIDER;
+        ALTER ROLE db_owner ADD MEMBER [test-bc-adf];
 
-
-    CREATE USER [test-bc-adf] FROM EXTERNAL PROVIDER;
-    ALTER ROLE db_owner ADD MEMBER [test-bc-adf];
+        # Config of resource Azure SQL Server is Completed
 
 
     # Azure Analysis Services
-    # Azure DevOps 
+        # In Azure go to Resource Groups
+        # Click 'Create' to create a new Resource
+        # Search for 'Analysis Service'
+        # Choose a name for the Azure Analysis Service - naming convention ({company}-{environment}-as)
+        # Choose Azure Subscription
+        # Choose Resource Group 
+        # Choose 'Sweden' as Location
+        # Choose etiher 'D1' or 'B1' as Pricing tier 
 
+
+    # Azure DevOps 
+        # Wait to enrich
+        
 
 # Setup User Acceptance Test and Production Environment
+    # Make the exact setups for User Acceptance Test and Production Environment.
 
 # Prepare Bronze, Silver and Gold Architecture for Azure Blob Storage Gen 2 for each Environment.
 
-# Build Generic Azure Data Factory Pipeline for API Requests.
+# Build Generic Azure Data Factory Pipeline for API Requests towards Business Central.
+    # The following Pipeline is completely generic and it checks if existing files exists, copies either full load ord delta, merge the data via dataflow and triggers stored procedure to tranfrom data.
+    # Please Prepare all the Linked Services in advantage:
 
-# Build Generic Azure DataBricks Notebook for Data Transformation
+    # Go to Azure Data Factory
+    # Go to the 'Manage Tab'
+    # Go to 'Linked Services' under Connections
+    # Search 'Key Vault' under data Store and Continue with this option.
+    # Give the Linked Service a Name - naming convention ({company}-{type}-{version}) (company-keyvault-v1)
+    # Create a short Description for the Linked Service for convenience
+    # Tick Radio Button 'From Azure Subscription' for Selection Method
+    # Choose Subscription and Key Vault Name 
+    # Choose 'Sustem-assigned managed identity' for Authentication method.
+    # Choose Radio Button 'To linked service' for Test connection.
 
-# Setup Azure SQL Database for Silver Layer Data
+    # Config of Linked Service for Azure Key Vault is completed.
+
+    # Go to Azure Data Factory
+    # Go to the 'Manage Tab'
+    # Go to 'Linked Services' under Connections
+    # Search 'REST' under Data Store Continue with this option.
+    # Give the Linked Service a Name - naming convention ({company}-{system}-{type}-{version}) (company-bc-rest_api-v1)
+    # Create a short Description for the Linked Service for convenience
+    # Choose 'AutoResolveIntegrationRuntime' for Connect via integration runtime
+    # Go to 'Parameters' and enter the following:
+
+    # bc_api_environment:       Must be defined as parameter for the Base URL for API Calls.
+    # bc_api_group:             Must be defined as parameter for the Base URL for API Calls
+    # bc_api_publisher:         Must be defined as parameter for the Base URL for API Calls
+    # bc_company_id:            Must be defined as parameter for the Base URL for API Calls
+
+    # Once the parameters are added write the following for the Base URL: 
+      @{concat('https://api.businesscentral.dynamics.com/v2.0/', linkedService().bc_tenant, '/',linkedService().bc_api_environment,'/api/',linkedService().bc_api_publisher, '/',linkedService().bc_api_group,'/v1.0/companies(',linkedService().bc_company_id,')')}
+      
+    # Choose 'OAuth 2.0 Client Credentials' for Authentication Type
+    # Enter https://login.microsoftonline.com/{tenant_ID}/oauth2/v2.0/token as Token endpoint
+    # For 'Client ID' Go to App Registration and enter Application (Client ID)
+    # For 'Client Secret' Choose Azure Key Vault and Pick the previously defined Key for the Client Secret ID.
+    # For 'Scope' enter the following https://api.businesscentral.dynamics.com/.default
+    # Leave 'Resource' Empty
+    # Tick Radio Button 'Enable' for Server Certificate validation
+
+    # Config of Linked Service for Business Central Rest API is completed.
+
+    # Go to Azure Data Factory
+    # Go to the 'Manage Tab'
+    # Go to 'Linked Services' under Connections
+    # Search 'Azure Data Lake Storage Gen2' under Data Store Continue with this option.
+    # Give the Linked Service a Name - naming convention ({company}-{system}-{type}-{version}) (company-data_lake_gen2-v1)
+    # Create a short Description for the Linked Service for convenience
+    # Tick Radio Button 'From Azure Subscription' for Selection Method
+    # Choose Subscription and Storage Account Name 
+    # Choose 'Sustem-assigned managed identity' for Authentication method.
+    # Choose Radio Button 'To linked service' for Test connection.
+
+    # Config of Linked Service for Azure Storage Account is completed.
+
+    # Go to Azure Data Factory
+    # Go to the 'Manage Tab'
+    # Go to 'Linked Services' under Connections
+    # Search 'Azure SQL Database' under Data Store Continue with this option.
+    # Give the Linked Service a Name - naming convention ({company}-{system}-{type}-{version}) (company-sql_server_database-v1)
+    # Create a short Description for the Linked Service for convenience
+    # Tick Radio Button 'From Azure Subscription' for Selection Method
+    # Choose Subscription, Server Name and Database Name.
+
+    # An Error will Occour when trying to connect to either Server or Database: 
+    # Cannot connect to SQL Database. Please contact SQL server team for further support. Server, Database, User:
+      Check the linked service configuration is correct, and make sure the SQL Database firewall allows the integration runtime to access.
+    # To fix this go to Azure Sql Server Resource in Azure
+    # Click on the Database
+    # Copy the 'Server Name' in the upper right Corner of the Essentials Tab: server.database.windows.net
+    # Open SQL Server Management Studio 
+    # Choose Database Engine
+    # For 'Server Name' paste the Server Name from Azure SQL.
+    # for 'Authentication' choose Microsoft Entra MFA
+    # A new Authentication Window will appear. Enter Login Information.
+    # Go To the given Database under the Server and create New Query
+    # Paste the Following:
+      CREATE USER {Azure_Resource_Name} FROM EXTERNAL PROVIDER;
+      ALTER ROLE db_owner ADD MEMBER {Azure_Resource_Name}
+
+    # Go back to the creation of the Linked Service.
+    # Choose 'System-assigned managed identity
+    # Retry 'Test Connection'. This time it should Connect Successfully.
+    # Choose 'Mandatory' for Encryption.
+    # Tick Radio Button for Trust Server Certificate
+
+    # Config of Linked Service for Azure SQL Server is completed.
+
+    # Config of All Linked Services are Completed.
+
+    # For easy management across environments one must define Globally Available Parameters for Pipelines, Datasets etc. to easen the deployment process
+    # Go to Azure Data Factory Studio
+    # Go to the Manage Tab 
+    # Go to 'Global Parameters' under Author
+    # Set the following parameters:
+
+    # bc_api_environment:       Must be either set to 'sandbox' or 'production' to easily test the connection in each environment.
+    # bc_tenant_id:             Must be taken from the URL for the business central instance. 
+    # storage_account_name:     Must be taken from the environment
+    # sql_server_name:          Must be taken from the environment
+
+    # Finally, the Pipeline will be made. One must perceive the Pipeline as the Orchestration of ETL.
+    # Go to Azure Data Factory Studio
+    # Create a New pipeline and give it a name - naming convenion ({extract_source}-{extension_name}-to-{sink_name}-{schema_and_table_name}) (bc-customers-to-sql-analytics_customers)
+    # Create locally available parameter. Click on the empty canvas and choose 'Parameters' on the ribbon. 
+
+    # bc_entitiy_name:          Must be chosen to easily manipulate the API Endpoint.
+    # bc_company_id:            Must be taken from the generic companies endpoint. I suggest relesys only has one company. 
+
+
+
+    # Create a 'Lookup' Activity under Activities
+    # For the ribbon tab 'General' enter name and a short description for convenience - Naming Convention (Lookup_data-{layer}-{entity}) (Lookup_data-bronze-companies)
+    # Create a new dataset for the source dataset.
+    # Click 'New'
+    # Search for 'Azure Data Lake Storage Gen2' and press Continue.
+    # Give the dataset a name - Naming Convention ({type}-{entity_name}-{datatype}) (source-companies-parquet)
+    # Hard Code the File Path for now - naming convenion ({layer}-{entity_name})
+    # Choose 'From connection/store' for Import schema.
+    # Go to newly created dataset.
+    # Go to 'Parameters' on the ribbon.
+    # Add a new parameter for the source_file_name - naming convention (source-filename-{filename}) (source-filename-companies). Leave it empty for now.
+    # Go back to the Lookup Activity.
+    # Now the parameter is available. To look for any file with the extension 'Parquet' write '*.parquet'. 
+    # Click on 'Preview data' under the settings for Source Dataset. If data is available, rows will be retrieved from the Storage Account.
+    # Tick Radio Button 'Wildcard file path'. Leave the folder path empty and write '*.parquet' for the Wildcard file name.
+
+    # Config of Lookup Activity is Completed.
+
+    # Create a 'If Condition' Activity under Activities
+    # Give the Activity a name - Naming Convention (Data Is Existing-{layer}_{entity}). This is easy to comprehend when asking if True or False.
+    # Give the short Description for convenience.
+    # Go to the 'Activites' on the ribbon tab.
+    # For Expression enter the following: 
+      
+      @not(empty(activity('{Lookup Activity Naming Convention}').output.firstRow))
+      @not(empty(activity('Lookup_data-bronze_companies').output.firstRow))
+
+    # Click on the Pen to edit the nested Case Activity for False Conditions
+    # Create a new 'Set Variable' Activity
+    # Give it name and a description for convenience - Naming Convention (Data Exists for_{layer}-{entity}-False)
+    # Make a new 'Copy Data' Activity.
+    # Create a new 'Source dataset' - Naming Convention (source-fullload-bc-{entity})
+    # Search for 'REST' and press Continue.
+    # Used previously defined Linked Service for Business Central API Calls.
+    # Go to the newly created Dataset.
+    # Go to 'Parameters' in the Ribbon Tab.
+    # Create an 'Endpoint Parameter' for the Dataset - Naming convenience (entity_endpoint). Keep the value blank for now.
+    # Go back to 'Connection' in the ribbon tab.
+    # For the 'Relative URL' Add the following dynamic content: 
+      @dataset().entitiy_endpoint
+
+    # Go back to the Copy Activity for the Full Load. Now set the Dataset Property 'entitiy_endpoint' to Pipeline Parameter 'bc_entity_name'.
+    # Check if preview of the data is available.
+
+    # Go to the Sink tab in the ribbon.
+    # Create a New 'Sink Dataset'.
+    # Search for 'Azure Data Lake Storage Gen2' and Continue.
+    # Choose 'Parquet' as the format for the sink data.
+    # Choose 'Linked Service'.
+    # For 'File Path' set the layer and entitiy containers. 
+    # Choose 'From connection/store' for the Import Schema.
+    # Under 'Connection' tab in the ribbon browse for the Filesystem and Directory - {layer}-{entity}
+    # Under 'Parameters' tab in the ribbon add a new Parameter for sink_filename - Naming Convention (sink_filename) Leave it empty for now.
+    # Under 'Connection' tab in the ribbon set dynamic content for file name as the newly created variable 'sink_filename'.
+    # Go back to the Copy Actity.
+    # Under 'Sink' Enter the filename for the sink file with dynamic parameters: 
+      @concat(pipeline().parameters.bc_entity_name, '_fullload.parquet')
+
+    # Under 'Mapping' tab in the ribbon Click on 'Import schemas'.
+    # Choose '$['Value'] for the Collection reference.
+    # Tick 'Map complex values to string'
+    # Click on 'Import Schemas' once again.
+    # Pick the desired columns, change type or name. 
+
+    # Config for Full Load is Completed.
+
+    # Click on the Pen to edit the nested Case Activity for False Conditions
+    # Create a new 'Set Variable' Activity
+    # Give it name and a description for convenience - Naming Convention (Data Exists for_{layer}-{entity}-False)
+    
+    # Make a new 'Copy Data' Activity.
+    # Create a new 'Source dataset' - Naming Convention (source-delta-bc-{entity}).
+    # Search for 'REST' and press Continue.
+    # Used previously defined Linked Service for Business Central API Calls.
+    # Go to the newly created Dataset.
+    # Go to 'Parameters' in the Ribbon Tab.
+    # Create an 'Endpoint Parameter' for the Dataset - Naming convenience (entity_endpoint). Keep the value blank for now.
+    # Go back to 'Connection' in the ribbon tab.
+    # For the 'Relative URL' Add the following dynamic content: 
+      @dataset().entitiy_endpoint
+
+    # Go back to the Copy Activity for the Full Load. Now set the Dataset Property 'entitiy_endpoint' to Pipeline Parameter 'bc_entity_name'.
+    # Since this is a check for delta load then one must include the ge filter Odata Protocol to ensure only records with a last modified value greater than last load is present. Last Load is present in SQL LATER!!!!!!
+    /customers?$filter= lastModifiedDateTime ge [[[2024-10-05T23:27:54.633Z]]] MUST BE Retrieved from Logging SQL Via. Lookup Activity.
+
+    # Check if preview of the data is available.
+
+    # Go to the Sink tab in the ribbon.
+    # Create a New 'Sink Dataset'.
+    # Search for 'Azure Data Lake Storage Gen2' and Continue.
+    # Choose 'Parquet' as the format for the sink data.
+    # Choose 'Linked Service'.
+    # For 'File Path' set the layer and entitiy containers. 
+    # Choose 'From connection/store' for the Import Schema.
+    # Under 'Connection' tab in the ribbon browse for the Filesystem and Directory - {layer}-{entity}
+    # Under 'Parameters' tab in the ribbon add a new Parameter for sink_filename - Naming Convention (sink_filename) Leave it empty for now.
+    # Under 'Connection' tab in the ribbon set dynamic content for file name as the newly created variable 'sink_filename' and append the current utc time: 
+      @concat(dataset().parameters.bc_entitiy_name, '-', utcNow(), '.parquet')
+    # Go back to the Copy Actity.
+    # Under 'Sink' Enter the filename for the sink file with dynamic parameters: 
+      @concat(dataset().parameters.bc_entitiy_name, '-', utcNow(), '.parquet')
+
+    Config of 'If Condition' Activity is Completed.
+
+    # To merge the uploaded files for the entity into one single parquet file one must create a new Data flow. Keep in mind the filtration of duplicates is performed in a Stored Procedure later!!!!!
+    # Click 'Create Dataflow' and give it a name - Naming Convention (Dataflow-sink-combined-data-{entity})
+    # Click on the arrow next to 'Add Source'. 
+    # Choose Source.
+    # Choose a name and description for the Output stream.
+    # Create new dataset for Source Type
+    # Search for 'Azure Data Lake Storage Gen2' and Continue.
+    # Create a new Dataset for the combined load - Naming Convention (source-fullload_for_merge-bc-{entity})
+    # Choose 'Parquet' as the format for the sink data.
+    # Choose 'Linked Service'.
+    # For 'File Path' set the layer and entitiy containers. Include the fullload parquet file since this is the base file the incremental load will be based on. 
+    # Choose 'From connection/store' for the Import Schema.
+    # Tick Allow schema drift
+    # Go to Source option tab in the Ribbon
+    # Create an 'Parameter' for the Dataset - Naming convenience (source_file_name). Keep the value blank for now.
+    # Tick Change data capture - Very important for delta load logic.
+
+    # Click on the small plus next to the source.
+    # Add a new destination (Sink).
+    # Choose a name and description for the Output stream.
+    # Set the incoming stream to the Source step in the dataflow.
+    # Choose 'Dataset' as Sink type
+    # Create a new dataset for Sink Type - Naming Convention (sink-fullload_for_merge-bc-{entity})
+    # Create an 'Parameter' for the Dataset - Naming convenience (sink_file_name). Keep the value blank for now.
+    # Set the File Path to silver-entity_name. Data is officially ready for transformaiton in SQL.
+    # Tick 'Allow schema drift'
+    # Go to Source settings tab in the Ribbon
+    # Choose 'Output to single file' for File name option.
+    # Choose an name for the output file - Naming Convention (combined-{bc_entity}-.parquet)
+    # Go back to the Azure Pipeline.
+    # Add 'Dataflow' Activity to the pipeline.
+    # Choose a name and description for the Output streams.
+
+    # Config of Dataflow is Completed. Merge is now ready. 
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER   PROCEDURE [dbo].[spTransformCompanies] @rank int AS 
+BEGIN
+DROP TABLE IF EXISTS [analytics].[companies];
+
+WITH cte AS(
+SELECT 
+	[id],
+	[name], 
+	[modified],
+	ROW_NUMBER() OVER (PARTITION BY [name] ORDER BY [modified] ASC) AS [Rank]
+FROM [dbo].[companies]
+)
+
+
+SELECT
+	[id],
+	[name], 
+	[modified],
+	YEAR([modified]) AS [Year], 
+	MONTH([modified]) AS [Month]
+	INTO [analytics].[companies]
+ FROM cte
+WHERE [Rank] = 1
+
+SELECT * FROM [analytics].[companies]
+END
+
+
+
+
+
+
+
+
+    https://api.businesscentral.dynamics.com/v2.0/89a1cf79-7084-42b3-be27-912b312aa9f9/sandbox/api/tL/tLDev/v1.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Setup Azure SQL Database for 'Gold' Layer Data for Staged data for Schema staged.{tablename}
 
 # Setup Azure Analysis Service
 
 # Setup Workspace for Power BI Service for User Acceptance Test and Production Environment.
 
 # All Set and Done.
+
+# Azure DevOps 
+
