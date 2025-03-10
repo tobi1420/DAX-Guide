@@ -1,0 +1,15 @@
+Repeat newest value based on lastdate record = 
+IF(
+  [Comparing Measure] <> BLANK(),                  // Takes care of potential differences in granularity from fact tables by checkig for nulls.
+  LASTNONBLANK(                      
+      'Calendar'[Date],                            // Calendar table must be marked as Date Table in Power BI Settings.
+      [Measure that must be repeated]              
+      FILTER(                                      // Applies an iterator to go from filter to row context.
+        ALL(                                       // All Removes all external and internal filter context which means all rows for calendar is retrieved.
+          'Calendar'
+        ),
+      'Calendar'[Date] < MAX('Calendar'[Date])    // The first argument in the equation relates to the actual Calendar Table.
+      )                                           // The MAX statement looksup the latest date in the current filter Context.
+    ),                                            // This means that days prior to the 'SELECTEVALUE'/'MAX' date is retrieved as a table.
+  BLANK()                                         // False condition for the IF Statement.
+)
