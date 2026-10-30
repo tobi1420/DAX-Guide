@@ -1,0 +1,17 @@
+Calendars are a curious thing!
+Year follows next year and months follow next month 
+But weeks are a weird size...
+Sometimes they cover only a fraction of an ordinary week in either the end or beginning of a year. Occassionally there is 53 weeks in a year.
+It is a certified mess and the only way to overcome this correctly is to apply the ISO 8621 Standard for weeks. This actually means that a ISO Year might surpass the gregorian year and this is beneficial.
+Now, the right way to do week over week analysis is to create two columns. One that handles the Week Number and one that handles the Year based on the ISO 8621 Standard.
+Creating the Iso Week column is straight forward. DAX has an inbuilt function called WEEKNUM. An inbuilt for the Standard is also included as 21 (part of the entire ISO 8621 standard).
+
+ISO Week = WEEKNUM('DimCalendar'[Date], 21)
+Week = WEEKNUM('DimCalendar'[Date], 2)
+
+The more interesting and challenging part if to calculate the ISO Year. The following expression is short and elegant but silently difficult.
+
+ISO Year = YEAR('DimCalendar'[Date] + 4 - WEEKDAY('DimCalendar'Date], 2)
+
+The constant 4 is the most important part of the function. It reveals one of the most important ruleset of the ISO 8621 Standard - The first week of a year must always contain the first thursday based on gregorian calculations.
+Why 4 then? Well, it is the fourth integervalue for weekday = 1) Monday, 2) Tuesday, 3) Wednesday, 4) Thursday, 5) Friday, 6) Saturday, 7) Sunday.
